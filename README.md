@@ -13,10 +13,10 @@ oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel 
     </thead>
     <tbody>
         <tr>
-            <td rowspan=4 align="center">oneMKL interface</td>
-            <td rowspan=4 align="center">oneMKL selector</td>
-            <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for Intel CPU</td>
-            <td align="center">Intel CPU</td>
+            <td rowspan=5 align="center">oneMKL interface</td>
+            <td rowspan=5 align="center">oneMKL selector</td>
+            <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for x86 CPU</td>
+            <td align="center">x86 CPU</td>
         </tr>
         <tr>
             <td align="center"><a href="https://software.intel.com/en-us/oneapi/onemkl">Intel(R) oneAPI Math Kernel Library</a> for Intel GPU</td>
@@ -27,8 +27,12 @@ oneMKL interfaces are an open-source implementation of the oneMKL Data Parallel 
             <td align="center">NVIDIA GPU</td>
         </tr>
         <tr>
-            <td align="center"><a href="https://ww.netlib.org"> NETLIB LAPACK</a> for INTEL CPU </td>
-            <td align="center">INTEL CPU</td>
+            <td align="center"><a href="https://developer.nvidia.com/curand"> NVIDIA cuRAND</a> for NVIDIA GPU </td>
+            <td align="center">NVIDIA GPU</td>
+        </tr>
+        <tr>
+            <td align="center"><a href="https://ww.netlib.org"> NETLIB LAPACK</a> for x86 CPU </td>
+            <td align="center">x86 CPU</td>
         </tr>
     </tbody>
 </table>
@@ -56,17 +60,17 @@ There are two oneMKL selector layer implementations:
 Example of app.cpp with run-time dispatching:
 
 ```cpp
-include "oneapi/mkl.hpp"
+#include "oneapi/mkl.hpp"
 
 ...
-cpu_dev = cl::sycl::device(cl::sycl::cpu_selector());
-gpu_dev = cl::sycl::device(cl::sycl::gpu_selector());
+cpu_dev = sycl::device(sycl::cpu_selector());
+gpu_dev = sycl::device(sycl::gpu_selector());
 
-cl::sycl::queue cpu_queue(cpu_dev);
-cl::sycl::queue gpu_queue(gpu_dev);
+sycl::queue cpu_queue(cpu_dev);
+sycl::queue gpu_queue(gpu_dev);
 
-oneapi::mkl::blas::gemm(cpu_queue, transA, transB, m, ...);
-oneapi::mkl::blas::gemm(gpu_queue, transA, transB, m, ...);
+oneapi::mkl::blas::column_major::gemm(cpu_queue, transA, transB, m, ...);
+oneapi::mkl::blas::column_major::gemm(gpu_queue, transA, transB, m, ...);
 ```
 How to build an application with run-time dispatching:
 
@@ -80,19 +84,19 @@ $> clang++ -fsycl app.o –L$ONEMKL/lib –lonemkl
 Example of app.cpp with compile-time dispatching:
 
 ```cpp
-include "oneapi/mkl.hpp"
+#include "oneapi/mkl.hpp"
 
 ...
-cpu_dev = cl::sycl::device(cl::sycl::cpu_selector());
-gpu_dev = cl::sycl::device(cl::sycl::gpu_selector());
+cpu_dev = sycl::device(sycl::cpu_selector());
+gpu_dev = sycl::device(sycl::gpu_selector());
 
-cl::sycl::queue cpu_queue(cpu_dev);
-cl::sycl::queue gpu_queue(gpu_dev);
+sycl::queue cpu_queue(cpu_dev);
+sycl::queue gpu_queue(gpu_dev);
 
 oneapi::mkl::backend_selector<oneapi::mkl::backend::mklcpu> cpu_selector(cpu_queue);
 
-oneapi::mkl::blas::gemm(cpu_selector, transA, transB, m, ...);
-oneapi::mkl::blas::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, ...);
+oneapi::mkl::blas::column_major::gemm(cpu_selector, transA, transB, m, ...);
+oneapi::mkl::blas::column_major::gemm(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas> {gpu_queue}, transA, transB, m, ...);
 ```
 How to build an application with compile-time dispatching:
 
@@ -119,7 +123,7 @@ Supported domains: BLAS, RNG
     <tbody>
         <tr>
             <td rowspan=4 align="center">BLAS</td>
-            <td align="center">Intel CPU</td>
+            <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
         </tr>
@@ -133,18 +137,23 @@ Supported domains: BLAS, RNG
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
-            <td align="center">Intel CPU</td>
+            <td align="center">x86 CPU</td>
             <td align="center">NETLIB LAPACK</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
-            <td rowspan=2 align="center">RNG</td>
-            <td align="center">Intel CPU</td>
+            <td rowspan=3 align="center">RNG</td>
+            <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">Intel GPU</td>
+            <td align="center">Dynamic, Static</td>
+        </tr>
+        <tr>
+            <td align="center">NVIDIA GPU</td>
+            <td align="center">NVIDIA cuRAND</td>
             <td align="center">Dynamic, Static</td>
         </tr>
     </tbody>
@@ -164,7 +173,7 @@ Supported domains: BLAS, RNG
     <tbody>
         <tr>
             <td rowspan=3 align="center">BLAS</td>
-            <td align="center">Intel CPU</td>
+            <td align="center">x86 CPU</td>
             <td rowspan=2 align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
         </tr>
@@ -173,13 +182,13 @@ Supported domains: BLAS, RNG
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
-            <td align="center">Intel CPU</td>
+            <td align="center">x86 CPU</td>
             <td align="center">NETLIB LAPACK</td>
             <td align="center">Dynamic, Static</td>
         </tr>
         <tr>
             <td align="center">RNG</td>
-            <td align="center">Intel CPU</td>
+            <td align="center">x86 CPU</td>
             <td align="center">Intel(R) oneAPI Math Kernel Library</td>
             <td align="center">Dynamic, Static</td>
         </tr>
@@ -196,7 +205,7 @@ Supported domains: BLAS, RNG
     - Intel(R) Xeon(R) Processor Family
 - Accelerators
     - Intel(R) Processor Graphics GEN9
-    - NVIDIA(R) TITAN RTX(TM) (Linux* only. Not tested with other NVIDIA GPU families and products.)
+    - NVIDIA(R) TITAN RTX(TM) (Linux* only. cuRAND backend tested also with Quadro and A100 GPUs. Not tested with other NVIDIA GPU families and products.)
     
 ---
 ### Supported Operating Systems
@@ -205,7 +214,7 @@ Supported domains: BLAS, RNG
 
 Operating System | CPU Host/Target | Integrated Graphics from Intel (Intel GPU) |  NVIDIA GPU
 :--- | :--- | :--- | :---
-Ubuntu                            | 18.04.3, 19.04 | 18.04.3, 19.10  | 18.04.3
+Ubuntu                            | 18.04.3, 19.04 | 18.04.3, 19.10  | 18.04.3, 20.04
 SUSE Linux Enterprise Server*     | 15             | *Not supported* | *Not supported*
 Red Hat Enterprise Linux* (RHEL*) | 8              | *Not supported* | *Not supported*
 Linux* kernel                     | *N/A*          | 4.11 or higher | *N/A*
@@ -274,7 +283,7 @@ Microsoft Windows* Server | 2016, 2019 | *Not supported*
     </thead>
     <tbody>
         <td rowspan=5> Linux*/Windows* </td>
-        <td rowspan=2> Intel CPU </td>
+        <td rowspan=2> x86 CPU </td>
         <td> Intel(R) oneAPI DPC++ Compiler <br> or <br> Intel project for LLVM* technology </td>
         <td> No</td>
         <tr>
@@ -319,7 +328,7 @@ Python | 3.6 or higher | No | *N/A* | *Pre-installed or Installed by user* | [PS
 [Ninja](https://ninja-build.org/) | 1.10.0 | Yes | conan-center | ~/.conan/data or $CONAN_USER_HOME/.conan/data | [Apache License v2.0](https://github.com/ninja-build/ninja/blob/master/COPYING)
 [GNU* FORTRAN Compiler](https://gcc.gnu.org/wiki/GFortran) | 7.4.0 or higher | Yes | apt | /usr/bin | [GNU General Public License, version 3](https://gcc.gnu.org/onlinedocs/gcc-7.5.0/gfortran/Copying.html)
 [Intel(R) oneAPI DPC++ Compiler](https://software.intel.com/en-us/oneapi/dpc-compiler) | latest | No | *N/A* | *Installed by user* | [End User License Agreement for the Intel(R) Software Development Products](https://software.intel.com/en-us/license/eula-for-intel-software-development-products)
-[Intel project for LLVM* technology binary for Intel CPU](https://github.com/intel/llvm/releases) | Daily builds (experimental) tested with [20200331](https://github.com/intel/llvm/releases/download/20200331/dpcpp-compiler.tar.gz) | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
+[Intel project for LLVM* technology binary for x86 CPU](https://github.com/intel/llvm/releases) | Daily builds (experimental) tested with [20200331](https://github.com/intel/llvm/releases/download/20200331/dpcpp-compiler.tar.gz) | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
 [Intel project for LLVM* technology source for NVIDIA GPU](https://github.com/intel/llvm/releases) | Daily source releases: tested with [20200421](https://github.com/intel/llvm/tree/20200421) | No | *N/A* | *Installed by user* | [Apache License v2](https://github.com/intel/llvm/blob/sycl/sycl/LICENSE.TXT)
 [Intel(R) oneAPI Math Kernel Library](https://software.intel.com/en-us/oneapi/onemkl) | latest | Yes | apt | /opt/intel/inteloneapi/mkl | [Intel Simplified Software License](https://software.intel.com/en-us/license/intel-simplified-software-license)
 [NVIDIA CUDA SDK](https://developer.nvidia.com/cublas) | 10.2 | No | *N/A* | *Installed by user* |[End User License Agreement](https://docs.nvidia.com/cuda/eula/index.html)
@@ -376,7 +385,7 @@ export CONAN_USER_HOME=/usr/local/my_workspace/conan_cache
 
 Profiles are a way for Conan to determine a basic environment to use for building a project. This project ships with profiles for:
 
-- Intel(R) oneAPI DPC++ Compiler for Intel CPU and Intel GPU backend: `inteldpcpp_lnx`
+- Intel(R) oneAPI DPC++ Compiler for x86 CPU and Intel GPU backend: `inteldpcpp_lnx`
 
 1. Open the profile you wish to use from `<path to onemkl>/conan/profiles/` and set `COMPILER_PREFIX` to the path to the root folder of compiler. The root folder is the one that contains the `bin` and `lib` directories. For example, Intel(R) oneAPI DPC++ Compiler root folder for default installation on Linux is `/opt/intel/inteloneapi/compiler/<version>/linux`. User can define custom path for installing the compiler.
 
@@ -445,6 +454,7 @@ Tells Conan where to install the package. It is similar to specifying `CMAKE_INS
 The following `options` are available to pass on `conan install` when building the oneMKL library:
 
 - `build_shared_libs=[True | False]`. Setting it to `True` enables the building of dynamic libraries. The default value is `True`.
+- `target_domains=[<list of values>]`. Setting it to `blas` or any other list of domain(s), enables building of those specific domain(s) only. If not defined, the default value is all supported domains.
 - `enable_mklcpu_backend=[True | False]`. Setting it to `True` enables the building of oneMKL mklcpu backend. The default value is `True`.
 - `enable_mklgpu_backend=[True | False]`. Setting it to `True` enables the building of oneMKL mklgpu backend. The default value is `True`.
 - `enable_mklcpu_thread_tbb=[True | False]`. Setting it to `True` enables oneMKL on CPU with TBB threading instead of sequential. The default value is `True`.
@@ -481,7 +491,7 @@ Then:
 # Inside <path to onemkl>
 mkdir build && cd build
 export CXX=<path_to_dpcpp_compiler>/bin/dpcpp;
-cmake .. [-DMKL_ROOT=<mkl_install_prefix>] \               # required only if enviroment variable MKLROOT is not set
+cmake .. [-DMKL_ROOT=<mkl_install_prefix>] \               # required only if environment variable MKLROOT is not set
          [-DREF_BLAS_ROOT=<reference_blas_install_prefix>] # required only for testing
 cmake --build .
 ctest
@@ -491,8 +501,8 @@ cmake --install . --prefix <path_to_install_dir>
 ```bash
 # Inside <path to onemkl>
 md build && cd build
-cmake .. -G Ninja  -DCMAKE_TOOLCHAIN_FILE="..\cmake\toolchain\intel_clang-cl-toolchain.cmake"  
-                  [-DMKL_ROOT=<mkl_install_prefix>] \                   # required only if enviroment variable MKLROOT is not set
+cmake .. -G Ninja
+                  [-DMKL_ROOT=<mkl_install_prefix>] \                   # required only if environment variable MKLROOT is not set
                   [-DREF_BLAS_ROOT=<reference_blas_install_prefix>]     # required only for testing
 
 ninja 
@@ -511,10 +521,14 @@ build_shared_libs        | BUILD_SHARED_LIBS        | True, False         | True
 enable_mklcpu_backend    | ENABLE_MKLCPU_BACKEND    | True, False         | True
 enable_mklgpu_backend    | ENABLE_MKLGPU_BACKEND    | True, False         | True
 *Not Supported*          | ENABLE_CUBLAS_BACKEND    | True, False         | False
+*Not Supported*          | ENABLE_CURAND_BACKEND    | True, False         | False
 *Not Supported*          | ENABLE_NETLIB_BACKEND    | True, False         | False
 enable_mklcpu_thread_tbb | ENABLE_MKLCPU_THREAD_TBB | True, False         | True
 build_functional_tests   | BUILD_FUNCTIONAL_TESTS   | True, False         | True
 build_doc                | BUILD_DOC                | True, False         | False
+target_domains (list)    | TARGET_DOMAINS (list)    | blas, rng           | All domains
+
+*Note: `build_functional_tests` and related CMake option affects all domains at a global scope.*
 
 ---
 

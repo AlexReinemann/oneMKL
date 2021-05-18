@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020 Intel Corporation
+* Copyright 2020-2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@
 
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace mklcpu {
 
 // host_task automatically uses run_on_host_intel if it is supported by the
@@ -208,6 +209,7 @@ static inline void copy_mat(T_src &src, MKL_LAYOUT layout, int64_t row, int64_t 
 }
 
 } // namespace mklcpu
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi
 

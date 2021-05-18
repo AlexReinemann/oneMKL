@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020 Intel Corporation
+* Copyright 2020-2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@
 
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace netlib {
 
 typedef enum { CblasFixOffset = 101, CblasColOffset = 102, CblasRowOffset = 103 } CBLAS_OFFSET;
@@ -87,6 +88,7 @@ static inline void host_task(H &cgh, F f) {
 }
 
 } // namespace netlib
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi
 

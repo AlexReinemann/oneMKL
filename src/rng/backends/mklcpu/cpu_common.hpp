@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020 Intel Corporation
+* Copyright 2020-2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -46,6 +46,9 @@ static inline void host_task(H &cgh, F f) {
 
 template <typename Engine, typename Distr>
 class kernel_name {};
+
+template <typename Engine, typename Distr>
+class kernel_name_usm {};
 
 } // namespace mklcpu
 } // namespace rng

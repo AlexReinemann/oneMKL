@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020 Intel Corporation
+* Copyright 2020-2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -79,13 +79,6 @@ public:
     // method to call any tests, switch between rt and ct
     template <typename... Args>
     int operator()(cl::sycl::device* dev, Args... args) {
-        // skip tests for devices with NVIDIA_ID
-        unsigned int vendor_id =
-            static_cast<unsigned int>(dev->get_info<cl::sycl::info::device::vendor_id>());
-        if (dev->is_gpu() && vendor_id == NVIDIA_ID) {
-            return test_skipped;
-        }
-
         auto exception_handler = [](sycl::exception_list exceptions) {
             for (std::exception_ptr const& e : exceptions) {
                 try {

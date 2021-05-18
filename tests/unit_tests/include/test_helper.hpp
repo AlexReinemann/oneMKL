@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020 Intel Corporation
+* Copyright 2020-2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -68,10 +68,16 @@
 #endif
 
 #ifdef ENABLE_CUBLAS_BACKEND
-#define TEST_RUN_NVIDIAGPU_SELECT(q, func, ...) \
+#define TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, ...) \
     func(oneapi::mkl::backend_selector<oneapi::mkl::backend::cublas>{ q }, __VA_ARGS__)
 #else
-#define TEST_RUN_NVIDIAGPU_SELECT(q, func, ...)
+#define TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, ...)
+#endif
+#ifdef ENABLE_CURAND_BACKEND
+#define TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, ...) \
+    func(oneapi::mkl::backend_selector<oneapi::mkl::backend::curand>{ q }, __VA_ARGS__)
+#else
+#define TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, ...)
 #endif
 
 #define TEST_RUN_CT_SELECT(q, func, ...)                                       \
@@ -83,8 +89,10 @@
                 q.get_device().get_info<cl::sycl::info::device::vendor_id>()); \
             if (vendor_id == INTEL_ID)                                         \
                 TEST_RUN_INTELGPU_SELECT(q, func, __VA_ARGS__);                \
-            else if (vendor_id == NVIDIA_ID)                                   \
-                TEST_RUN_NVIDIAGPU_SELECT(q, func, __VA_ARGS__);               \
+            else if (vendor_id == NVIDIA_ID) {                                 \
+                TEST_RUN_NVIDIAGPU_CUBLAS_SELECT(q, func, __VA_ARGS__);        \
+                TEST_RUN_NVIDIAGPU_CURAND_SELECT(q, func, __VA_ARGS__);        \
+            }                                                                  \
         }                                                                      \
     } while (0);
 
@@ -117,7 +125,7 @@ public:
     }
 };
 
-/* to accomodate Windows and Linux differences between alligned_alloc and
+/* to accommodate Windows and Linux differences between alligned_alloc and
    _aligned_malloc calls use oneapi::mkl::aligned_alloc and oneapi::mkl::aligned_free instead */
 namespace oneapi {
 namespace mkl {

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020 Intel Corporation
+* Copyright 2020-2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ int test(device* dev, oneapi::mkl::layout layout, oneapi::mkl::uplo upper_lower,
     auto ua = usm_allocator<fp, usm::alloc::shared, 64>(cxt, *dev);
     vector<fp, decltype(ua)> x(ua), A(ua);
     rand_vector(x, n, incx);
-    rand_trsm_matrix(A, layout, transa, n, n, lda);
+    rand_tbsv_matrix(A, layout, upper_lower, transa, n, k, lda);
 
     auto x_ref = x;
 

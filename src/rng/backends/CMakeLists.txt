@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright 2020 Intel Corporation
+# Copyright 2020-2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,4 +23,8 @@ endif()
 
 if(ENABLE_MKLGPU_BACKEND)
   add_subdirectory(mklgpu)
+endif()
+
+if(ENABLE_CURAND_BACKEND AND UNIX)
+  add_subdirectory(curand)
 endif()

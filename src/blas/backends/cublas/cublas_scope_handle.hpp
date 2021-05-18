@@ -29,6 +29,7 @@
 #include "cublas_helper.hpp"
 namespace oneapi {
 namespace mkl {
+namespace blas {
 namespace cublas {
 
 struct cublas_handle {
@@ -76,7 +77,7 @@ public:
 
     ~CublasScopedContextHandler() noexcept(false);
     /**
-   * @brief get_handle: creates the handle by implicitely impose the advice
+   * @brief get_handle: creates the handle by implicitly impose the advice
    * given by nvidia for creating a cublas_handle. (e.g. one cuStream per device
    * per thread).
    * @param queue sycl queue.
@@ -93,6 +94,7 @@ public:
 };
 
 } // namespace cublas
+} // namespace blas
 } // namespace mkl
 } // namespace oneapi
 #endif //_MKL_BLAS_CUBLAS_SCOPED_HANDLE_HPP_

@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright 2020 Intel Corporation
+# Copyright 2020-2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ target_include_directories(${LIB_OBJ}
           ${MKL_INCLUDE}
 )
 
-target_compile_options(${LIB_OBJ} PRIVATE ${MKL_COPT})
+target_compile_options(${LIB_OBJ} PRIVATE ${ONEMKL_BUILD_COPT} ${MKL_COPT})
 
 target_link_libraries(${LIB_OBJ} PUBLIC ONEMKL::SYCL::SYCL ${MKL_LINK_C})
 

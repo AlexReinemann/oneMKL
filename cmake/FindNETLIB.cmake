@@ -1,5 +1,5 @@
 #===============================================================================
-# Copyright 2020 Intel Corporation
+# Copyright 2020-2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 
 include_guard()
 
+include(FindPackageHandleStandardArgs)
 find_library(NETLIB_CBLAS_LIBRARY NAMES cblas.dll.lib cblas.lib cblas HINTS ${REF_BLAS_ROOT} PATH_SUFFIXES lib lib64)
 find_package_handle_standard_args(NETLIB REQUIRED_VARS NETLIB_CBLAS_LIBRARY)
 find_library(NETLIB_BLAS_LIBRARY NAMES blas.dll.lib blas.lib blas HINTS ${REF_BLAS_ROOT} PATH_SUFFIXES lib lib64)
@@ -33,23 +34,7 @@ endif()
 list(APPEND NETLIB_LINK ${NETLIB_CBLAS_LIBRARY})
 list(APPEND NETLIB_LINK ${NETLIB_BLAS_LIBRARY})
 
-
-set(NETLIB_COPT "")
-
-if(UNIX)
-  set(NETLIB_COPT "")
-else()
-  if(${BUILD_SHARED_LIBS})
-    set(NETLIB_COPT ${NETLIB_COPT} "-Donemkl_EXPORTS")
-  endif()
-endif()
-
-include(FindPackageHandleStandardArgs)
-if(UNIX)
-  find_package_handle_standard_args(NETLIB REQUIRED_VARS NETLIB_INCLUDE NETLIB_LINK)
-else()
-  find_package_handle_standard_args(NETLIB REQUIRED_VARS NETLIB_INCLUDE NETLIB_COPT NETLIB_LINK)
-endif()
+find_package_handle_standard_args(NETLIB REQUIRED_VARS NETLIB_INCLUDE NETLIB_LINK)
 
 add_library(ONEMKL::NETLIB::NETLIB UNKNOWN IMPORTED)
 set_target_properties(ONEMKL::NETLIB::NETLIB PROPERTIES IMPORTED_LOCATION ${NETLIB_CBLAS_LIBRARY})

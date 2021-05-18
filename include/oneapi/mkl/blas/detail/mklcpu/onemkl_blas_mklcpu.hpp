@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020 Intel Corporation
+* Copyright 2020-2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -37,20 +37,21 @@ using oneapi::mkl::uplo;
 using oneapi::mkl::side;
 using oneapi::mkl::diag;
 using oneapi::mkl::offset;
-
+namespace blas {
 namespace mklcpu {
 namespace column_major {
 
 #include "oneapi/mkl/blas/detail/onemkl_blas_backends.hxx"
 
-} //namespace column_major
+} // namespace column_major
 namespace row_major {
 
 #include "oneapi/mkl/blas/detail/onemkl_blas_backends.hxx"
 
-} //namespace row_major
-} //namespace mklcpu
-} //namespace mkl
-} //namespace oneapi
+} // namespace row_major
+} // namespace mklcpu
+} // namespace blas
+} // namespace mkl
+} // namespace oneapi
 
 #endif //_ONEMKL_BLAS_MKLCPU_HPP_

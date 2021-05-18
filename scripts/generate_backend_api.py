@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #===============================================================================
-# Copyright 2020 Intel Corporation
+# Copyright 2020-2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ from sys import argv, exit, stdin
 from subprocess import call
 from pprint import pprint
 from collections import defaultdict
+import errno
 import re
 import os
 
@@ -75,7 +76,7 @@ def print_declaration(func_list):
 try:
     os.makedirs(os.path.dirname(out_headername))
 except OSError as exc:
-    if exc.errno != os.errno.EEXIST:
+    if exc.errno != errno.EEXIST:
         raise
 
 out_file = open(out_headername, "w+")
@@ -112,6 +113,6 @@ try:
     lc = ["clang-format", "-style=file", "-i", out_headername]
     call(lc)
 except OSError as exc:
-    if exc.errno == os.errno.ENOENT:
+    if exc.errno == errno.ENOENT:
         print("Error: clang-format is not found")
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2020 Intel Corporation
+* Copyright 2020-2021 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -26,15 +26,15 @@
 namespace oneapi {
 namespace mkl {
 
-enum class backend { mklcpu, mklgpu, cublas, netlib, unsupported };
+enum class backend { mklcpu, mklgpu, cublas, curand, netlib, unsupported };
 
 typedef std::map<backend, std::string> backendmap;
 
-static backendmap backend_map = { { backend::mklcpu, "mklcpu" },
-                                  { backend::mklgpu, "mklgpu" },
-                                  { backend::cublas, "cublas" },
-                                  { backend::netlib, "netlib" },
-                                  { backend::unsupported, "unsupported" } };
+static backendmap backend_map = {
+    { backend::mklcpu, "mklcpu" }, { backend::mklgpu, "mklgpu" },
+    { backend::cublas, "cublas" }, { backend::curand, "curand" },
+    { backend::netlib, "netlib" }, { backend::unsupported, "unsupported" }
+};
 
 } //namespace mkl
 } //namespace oneapi
